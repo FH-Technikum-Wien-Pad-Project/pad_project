@@ -4,7 +4,10 @@ int uart0_filestream = -1;							//Kontrollbit
 uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);		//öffnet Serielle Schnittstelle;
 										//O_RDWR - Modus; O_NOCTTY - nicht Master; O_NDELAY - State egal
 if (uart0_filestream == -1) {							//falls Kontrollbit weiterhin -1, Fehler
+	printf("\n-----------------------\n");
 	printf("[ERROR] UART open()\n");
+   	printf("\n-----------------------\n");
+	return -1;
 }
 
 struct termios options;
