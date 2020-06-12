@@ -3,6 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <fcntl.h>
+#include <termios.h>
 #include "displayLibrary.h"
 #include "hardwareLibrary.h"
 #include "loggingLibrary.h"
