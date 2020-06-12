@@ -1,12 +1,16 @@
 #ifndef displayLibrary
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include "supportFunctionLibrary.h"
 //definitions
 #define SIZE 8
 //ARRARYS
 
+void numberSplitFunction(int splitNumberVariable ,char *splitArray)
+{
+    int sacondNumber = splitNumberVariable % 10;
+    int firstNumber = (splitNumberVariable - sacondNumber)/10;
+    splitArray[0] =+ firstNumber;
+    splitArray[1] =+ sacondNumber;
+}
 //functions
 void inputError()
 {
@@ -24,6 +28,7 @@ void inputError()
   {'-','R','-','-','R','-','R','-'},
   {'-','R','-','-','R','-','R','-'}
 };
+    printf("\n-----------------------\n");
   for (size_t i = 0; i < SIZE; i++) {
     for (size_t j = 0; j < SIZE; j++) {
       printf("%c", ledMatrixInputError[i][j]);
@@ -31,34 +36,12 @@ void inputError()
     }
     printf("\n");
   }
+  printf("-----------------------\n");
 }
 
-  
-
-
-void download()
-{
-  char ledMatrixDownloadArrow[SIZE][SIZE] =
-  {
-  {'-','-','-','G','G','-','-','-'},
-  {'-','-','-','G','G','-','-','-'},
-  {'-','-','-','G','G','-','-','-'},
-  {'G','-','-','G','G','-','-','G'},
-  {'-','G','-','G','G','-','G','-'},
-  {'-','-','G','G','G','G','-','-'},
-  {'-','-','-','G','G','-','-','-'}
-};
-    for (size_t i = 0; i < SIZE; i++) {
-      for (size_t j = 0; j < SIZE; j++) {
-        printf("%c", ledMatrixDownloadArrow[i][j]);
-        printf("  ");
-      }
-      printf("\n");
-    }
-  }
 void zahlenAusgabe(int zahl)
   {
-     
+    char splitArray[1];
     int zahlLeft;
     int zahlRight;
     char leftArray[5][3];
@@ -90,7 +73,7 @@ void zahlenAusgabe(int zahl)
     };
 
   //Spliting number
-    numberSplitFunction(zahl);
+    numberSplitFunction(zahl, splitArray);
     zahlLeft =+ splitArray[0];
     zahlRight =+ splitArray[1];
     int *ptrL;
@@ -246,6 +229,7 @@ void zahlenAusgabe(int zahl)
     printf("Error! Falsche eingabe!\n");
   }
 
+  printf("\n-----------------------\n");
   //Ausgabe der fertigen Matrix
   for (size_t l = 0; l < 3; l++) {
     for (size_t m = 0; m < SIZE; m++) {
@@ -272,8 +256,8 @@ void zahlenAusgabe(int zahl)
     }
     printf("\n");
   }
+  printf("-----------------------\n");
   }
-
 
 void download()
 {
@@ -287,6 +271,7 @@ void download()
   {'-','-','G','G','G','G','-','-'},
   {'-','-','-','G','G','-','-','-'}
 };
+    printf("\n-----------------------\n");
     for (size_t i = 0; i < SIZE; i++) {
       for (size_t j = 0; j < SIZE; j++) {
         printf("%c", ledMatrixDownloadArrow[i][j]);
@@ -294,6 +279,7 @@ void download()
       }
       printf("\n");
     }
+    printf("-----------------------\n");
   }
 
 
@@ -312,6 +298,7 @@ void lowOxygen()
     {'-','O','O','O','-','O','O','O'}
 };
     //Array ausgeben
+    printf("\n-----------------------\n");
     for (size_t i = 0; i < SIZE; i++) {
       for (size_t j = 0; j < SIZE; j++) {
         printf("%c", ledMatrixLowOxygen[i][j]);
@@ -319,8 +306,9 @@ void lowOxygen()
       }
       printf("\n");
     }
-
+    printf("-----------------------\n");
 }
+
 
 void lowOxygenAlarm()
 {
@@ -337,6 +325,7 @@ void lowOxygenAlarm()
     {'R','R','R','R','R','R','R','R'}
 };
   //Array Ausgeben
+  printf("\n-----------------------\n");
     for (size_t i = 0; i < SIZE; i++) {
       for (size_t j = 0; j < SIZE; j++) {
         printf("%c", ledMatrixLowOxygen[i][j]);
@@ -344,6 +333,7 @@ void lowOxygenAlarm()
       }
       printf("\n");
     }
+    printf("-----------------------\n");
 }
 
 //Ende Library
