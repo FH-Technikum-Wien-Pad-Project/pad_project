@@ -22,26 +22,4 @@ Program documentation:
 
 ###################################################################################################
 
-1.main.c
-
-
-2.displayLibrary.h
-
-	2.1 void inputError
-	2.2 void zahlenAusgabe
-		Ein Array welches eine Zahl von 0-9 ausgibt. in einer gewissen farbe.
-	2.3 void download
-	2.3 void lowOxygen
-	2.4 void lowOxygenAlarm
-
-3.harwareLibrary.h
-
-
-4.loggingLibrary.h
-
-
 ###################################################################################################
-Questions:
-
-1. Check Input -how? signal + datatype
-2. In testfile.c working version datatrasfer error? cant solve.
