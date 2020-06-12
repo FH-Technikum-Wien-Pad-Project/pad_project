@@ -132,7 +132,7 @@ void numberSplitFunctionTest() {
     printf("######################################\n");
     printf("\n");
 }
-
+/*
 void clockArray() {
 
   int index = 0;
@@ -171,4 +171,5 @@ void clockArray() {
       printf("%d%%  --    ", Sp20Array[i]);
       printf("N/A\n");
   }
+  */
 }
