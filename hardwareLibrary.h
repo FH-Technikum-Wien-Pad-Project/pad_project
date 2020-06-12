@@ -1,4 +1,4 @@
-int verbindung() {
+int read() {
 
 int uart0_filestream = -1;							//Kontrollbit
 uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);		//öffnet Serielle Schnittstelle;
