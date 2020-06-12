@@ -1,0 +1,176 @@
+----------------------------------------------------------------------------------------
+					Motivation
+----------------------------------------------------------------------------------------
+
+Im Herbst 2020 haben sich am Flughafen LKMI zwei tödliche Abstürze in Segelflugzeugen
+zugetragen. Beide Unfälle waren auf dieselbe Ursache zurückzuführen - Hypoxie, eine zu
+geringe Sauerstoffsättigung im Blut, die plötzlich und unbemerkt zur Ohnmacht führt.
+Da Segelflugzeuge bis zu 9000m hoch fliegen und keine Druckkabine besitzen, müssen
+Piloten/Innen bei zunehmender Höhe selbstständig auf ein Beatmungsgerät zugreifen.
+Leider wird diese Maßnahme selbst von erfahrenen Piloten/Innen oft zu spät, oder fehlerhaft
+ergriffen. 
+
+----------------------------------------------------------------------------------------
+					 Struktur
+----------------------------------------------------------------------------------------
+
+In der "Main"-Funktion wird zuerst nach einer Benutzereingabe gefragt.
+Die Eingabe führt zu einer Switch, bei der der Benutzer zwischen verschiedenen
+Funktionen wählen kann. Diese sind:	-Flug starten
+					-Wert anzeigen
+					-Flug beenden
+					-Log löschen
+
+_________________________________________________________________________________________
+			  	    ---Flug Starten---
+
+Wird "Flug starten" ausgewählt, wird zuerst eine verbindung mit einem Puls-
+Oxymeter aufgebaut und der daraus gewonnene Wert wird danach (sofern eine
+Verbindung hergestellt werden konnte) an die Logging- und die Ausgabefunktion
+übergeben. Wird die Verbindung unterbrochen, wird bei der nächsten Werte-Abfrage
+eine visueller Alarm ausgegeben. Dies passiert ebenfalls, wenn ein zu geringer
+Sauerstoffsättigungswert festgestellt wird. Dies wird in zwei Bereiche
+eingeteilt: Niedrig und Kritisch. Je nach Zustand wird ein anderes Signal ausgegeben.
+
+_________________________________________________________________________________________
+			 	    ---Wert anzeigen---
+
+Wird "Wert anzeigen" ausgewählt, wird der Sauerstoffsättigungswert erneut vom Puls-
+Oxymeter abgefragt und auf dem Display ausgegeben. Die Farbe des angezeigten Wertes hängt
+davon ab, ob dieser sich in einem normalen (grün), einem schlechten (orange) und einem
+kritischen Zustand (rot) befindet.
+
+_________________________________________________________________________________________
+				    ---Flug beenden---
+
+Wird "Flug beenden" ausgewählt, wird das gesamte Programm gestoppt. Das Log lässt sich
+auch danach noch öffnen.
+
+_________________________________________________________________________________________
+			 	    ---Log löschen---
+
+Wird "Log löschen" ausgewählt, wird ddas gesamte Log geslöscht. Dies ist unwiderrufbar!
+
+_________________________________________________________________________________________
+Display Outputs:
+
+	1.1 NI
+		Error: Keine Verbindung zu Sensoren.
+
+	1.2 00-99 Ziffer (Farbe: "Grün")
+		Wert konnte abgerufen werden und wird zweistellig angezeigt - Sauerstoffsättigung normal
+
+	1.3 Pfeil nach unten
+		Log Eintrag wird erstellt
+
+	1.4 00-99 Ziffer (Farbe: "Orange")
+		Wert konnte abgerufen werden und wird zweistellig angezeigt - Sauerstoffsättigung schlecht
+
+	1.5 00-99 Ziffer (Farbe: "Rot")
+		Wert konnte abgerufen werden und wird zweistellig angezeigt - Sauerstoffsättigung kritisch
+
+----------------------------------------------------------------------------------------
+				    Spezifikation
+----------------------------------------------------------------------------------------
+
+Übersicht:
+	1. Serielle Schnittstelle
+	2. DisplayLibrary
+	3. Logging
+
+
+########################################################################################
+Anm.: Da der komplizierteste und zeitaufwändigste Teil des Programmes sich in der
+Schnittstelle.h befindet, wird diese hier ausführlicher erklärt:
+########################################################################################
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<< 1. Serielle Schnittstelle (UART) >>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Bei einer seriellen Schnittstelle handelt es sich um die Datenübertragung zwischen zwei
+Geräten, bei der die Bits einzeln und nacheinander übertragen werden (seriell).
+
+UART (Universal Asynchronous Receiver Transmitter) ist eine Art diese Schnittstellen zu
+verbinden. Sie besteht aus 3 Leitungen. Einem Transmitter (TxD) zum Daten übertragen, einem
+Reciever (RxD) um Daten zu erhalten und einer Ground-Verbindung (GND). Weiters verläuft
+die Übertragung bei UART Taktlos (asynchron).
+
+_________________________________________________________________________________________
+Eine Übertragung besteht aus folgenden Elementen:
+
+Startbit: Pegeländerung als Zeichen, dass nun die Datenübertragung startet
+Datensatz: Die eigentlichen Daten, festgelegte Größe (in dem Fall 8 Bits)
+Paritätsbit: Dient zur Prüfung, ob die Übertragung Fehlerfrei verlief
+Stoppbit: Beendet die Datenübertragung
+
+_________________________________________________________________________________________
+Codebeschreibung:
+
+uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY); 
+	Funktionsbeschreibung: Öffnet die Serielle Schnittstelle.
+		-> "/dev/ttyAMA0” bezeichnet dabei die Zieladresse. Beim Raspberry Pi sind das 2 Pins (TxD und RxD). 
+		-> O_RDWR definiert den Modus. In diesem Fall, dass lesen und schreiben möglich ist.
+		-> O_NOCTTY definiert, dass dieses Gerät nicht die Datenübertragung kontrolliert/steuert (kein Master).
+		-> O_NDELAY setzt nur voraus, dass der Zustand, in dem sich RxD und TxD derzeit befinden, egal ist
+		   und die Datenübertragung direkt starten kann.
+
+tcgetattr(uart0_filestream, &options);
+	Funktionsbeschreibung: Definiert die Datenübertragung (Geschwindigkeit, Optionen,..)
+
+tcflush(uart0_filestream, TCIFLUSH);
+	Funktionsbeschreibung: Entfernt übrige „Reste“ alter Übertragungen, um Störungen zu vermeiden.
+
+tcsetattr(uart0_filestream, TCSANOW, &options);
+	Funktionsbeschreibung: Setzt die oben genannten Parameter neu
+
+read(uart0_filestream, (void*)BUF_RX, 50);
+	Funktionsbeschreibung: Prüft die Schnittstelle ab und liest erhaltene Daten. Diese werden in diesem Fall in der
+			  Variable „BUF_RX“ gespeichert.
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 2. DisplayLibrary >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+	Funktionen:
+
+		Void inputError()
+
+               		Funktionsbeschreibung: Gibt "NI" auf der 8x8-Matrix aus (= "No Input").
+
+		Void zahlenAusgabe(int zahl, char splitArray*)
+
+               		Funktionsbeschreibung: Funktion übernimmt einen Integer & einen Pointer
+			und gibt eine 8x8-Matrix mit einem Wert(00-99) aus.
+
+		Void download()
+
+              		Funktionsbeschreibung: Gibt einen Pfeil nach unten auf der 8x8-Matrix aus.
+
+		Void lowOxygen()
+
+               		Funktionsbeschreibung: Gibt ein "LO" auf der 8x8-Matrix aus.
+
+		Void low oxygenAlarm()
+
+               		Funktionsbeschreibung: Gibt ein rotes "X" auf der 8x8-Matrix aus.
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 3. LogO2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+	Funktionen:
+	
+		int Logging(int wert)
+			
+			Funktionsbeschreibung: 	Trägt den erhaltenen Wert in ein Log, das sich im
+						selben verzeichnis befindet. Wenn noch keine Datei
+						erxistiert wird eine erstellt.
+
+		void DeleteLog()
+
+			Funktionsbeschreibung: 	Löscht das erstelle Log.
+
+----------------------------------------------------------------------------------------
+				  Aufgabenteilung
+----------------------------------------------------------------------------------------
+
+Marcel Vrodoljak -> Schnittstelle.h
+Bingbin Zhou -> DisplayLibrary.h
+Daniel Canov -> DisplayLibrary.h
+Joram Eibl -> LogO2.h & main/tester
