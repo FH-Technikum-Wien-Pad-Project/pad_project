@@ -1,4 +1,4 @@
-int read() {
+int verbindung() {
 
 int uart0_filestream = -1;							//Kontrollbit
 uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);		//öffnet Serielle Schnittstelle;
@@ -8,13 +8,13 @@ if (uart0_filestream == -1) {							//falls Kontrollbit weiterhin -1, Fehler
 }
 
 struct termios options;
-tcgetattr(uart0_filestream, &options);						//Verbindung definieren
+tcgetattr(uart0_filestream, &options);						//get attributes
 	options.c_cflag = B9600 | CS8 | CLOCAL | CREAD; 			//Baudrate
-	options.c_iflag = IGNPAR;						//Input option
+	options.c_iflag = IGNPAR;						//Input option; Ignore framing errors and parity errors
 	options.c_oflag = 0;							//Output option
-	options.c_lflag = 0;							//Lin
-tcflush(uart0_filestream, TCIFLUSH);
-tcsetattr(uart0_filestream, TCSANOW, &options);
+	options.c_lflag = 0;							//Local mode
+tcflush(uart0_filestream, TCIFLUSH);						//clean the data lines
+tcsetattr(uart0_filestream, TCSANOW, &options);					//set all parameters
 
 
 // Bytes empfangen
