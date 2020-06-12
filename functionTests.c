@@ -8,6 +8,11 @@
 #include "loggingLibrary.h"
 #include "supportFunctionLibrary.h"
 
+//WICHTIG!
+//In diesem Program sind wurden die funktionen überprüft. Man kann die funktionsfähigkeit einzelner funktionen testen.
+//Die main.c ist für den Programablauf zuständig und dient auch als tester für den Programablauf
+
+
 //STRUCTURES
 typedef struct
 {
