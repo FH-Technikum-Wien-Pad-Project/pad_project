@@ -25,11 +25,15 @@ if (uart0_filestream != -1) {
 	unsigned char BUF_RX[50];
 	int rx_length = read(uart0_filestream, (void*)BUF_RX, 50);		//Daten lesen + länge in rx_length speichern
 
-	if (rx_length < 0) {							//Abfragen ob Daten erhalten wurden mit jeweiliger Meldung
+	if (rx_length < 0) {
+        printf("\n-----------------------\n");
 		printf("[ERROR] UART RX\n");
+        printf("\n-----------------------\n");
 	} else if (rx_length == 0) {
+        printf("\n-----------------------\n");
 		printf("[ERROR] UART RX - no data\n");
-	} else {
+        printf("\n-----------------------\n");
+	}else {
 		BUF_RX[rx_length] = '\0';					//letzes Zeichen zu \0 ändern, wenn Daten empfangen wurden
 	}
 }
